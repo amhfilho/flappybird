@@ -29,6 +29,14 @@ add_executable(${PROJECT_NAME}
         src/Bird.cpp
         include/Bird.h
         include/Vector2.h
+        src/TextureLoader.cpp
+        include/TextureLoader.h
+        src/AssetLoader.cpp
+        src/Sprite.cpp
+        include/Sprite.h
+        src/Background.cpp
+        include/Background.h
+        include/Background.h
 
 )
 
@@ -44,5 +52,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         ${CMAKE_SOURCE_DIR}/Fonts $<TARGET_FILE_DIR:${PROJECT_NAME}>/Fonts
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/Sounds $<TARGET_FILE_DIR:${PROJECT_NAME}>/Sounds
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/Graphics $<TARGET_FILE_DIR:${PROJECT_NAME}>/Graphics
 )
 

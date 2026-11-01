@@ -19,8 +19,8 @@ void Bird::Update(float deltaTime) {
     velocity = velocity + gravity * deltaTime;
     position.y = position.y + velocity * deltaTime;
     SDL_FRect rect = GetRect();
-    if (rect.y + rect.h >= Constants::Window::Height) {
-        position.y = Constants::Window::Height - Constants::Bird::Size;
+    if (rect.y + rect.h >= Constants::Window::Height - Constants::Sprites::Floor::Height) {
+        position.y = Constants::Window::Height - Constants::Sprites::Floor::Height - rect.h;
     }
 }
 

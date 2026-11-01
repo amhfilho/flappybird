@@ -10,7 +10,8 @@ Game::Game():
     state(GameState::Start),
     window(nullptr),
     renderer(nullptr),
-    bird(*this, {50.0f, 50.0f}) {
+    bird(*this, {50.0f, 50.0f}),
+    tileSet(Constants::Sprites::TileSetPath) {
 
     ticksCount = SDL_GetTicks();
 
@@ -47,6 +48,10 @@ bool Game::InitializeWindow() {
     }
 
     return true;
+}
+
+void Game::LoadData() {
+
 }
 
 void Game::RunLoop()
@@ -97,6 +102,8 @@ void Game::Update() {
 void Game::Draw() {
     SDL_SetRenderDrawColor(renderer, black.r, black.g, black.b, black.a);
     SDL_RenderClear(renderer);
+
+    background.Draw(renderer);
 
     bird.Draw(*renderer);
 

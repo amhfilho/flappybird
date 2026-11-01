@@ -6,8 +6,10 @@
 #include <SDL3/SDL.h>
 #include <SDL3_mixer/SDL_mixer.h>
 
+#include "Background.h"
 #include "Bird.h"
 #include "Bird.h"
+#include "Sprite.h"
 
 class Game {
 
@@ -22,6 +24,7 @@ public:
     GameState state;
 
     bool InitializeWindow();
+    void LoadData();
     void RunLoop();
     [[nodiscard]] Uint64 GetTicksCount() const;
 
@@ -34,6 +37,8 @@ private:
     float deltaTime;
 
     Bird bird;
+    Sprite tileSet;
+    Background background;
 
     void HandleInput();
     void Update();
