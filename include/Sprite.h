@@ -3,7 +3,8 @@
 //
 
 #pragma once
-#include <SDL3/SDL_render.h>
+struct SDL_Renderer;
+struct SDL_Texture;
 
 class Sprite {
 public:

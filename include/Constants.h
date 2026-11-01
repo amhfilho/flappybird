@@ -8,11 +8,17 @@ namespace Constants {
     namespace Window {
         inline constexpr const char* Title = "SDL3 Flappy Bird";
         inline constexpr int Width = 556;
-        inline constexpr int Height = 900;
+        inline constexpr int Height = 700;
     }
 
     namespace Bird {
         inline constexpr float Size = 30.0f;
+        namespace Sprite {
+            inline constexpr float X = 0.0f;
+            inline constexpr float Y = 0.0f;
+            inline constexpr float Width = 35.0f;
+            inline constexpr float Height = 25.0f;
+        }
     }
 
     namespace Sprites {
@@ -28,6 +34,18 @@ namespace Constants {
             inline constexpr float Y = 612.0f;
             inline constexpr float Width = 225.0f;
             inline constexpr float Height = 111.0f;
+        }
+        namespace DownPipe {
+            inline constexpr float X = 0.0f;
+            inline constexpr float Y = 168.0f;
+            inline constexpr float Width = 54.0f;
+            inline constexpr float Height = 404.0f;
+        }
+        namespace UpperPipe {
+            inline constexpr float X = 52.0f;
+            inline constexpr float Y = 168.0f;
+            inline constexpr float Width = 54.0f;
+            inline constexpr float Height = 404.0f;
         }
     }
 }

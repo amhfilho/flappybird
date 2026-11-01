@@ -12,9 +12,8 @@ Sprite::Sprite(const char* relativePath) :
     relativePath(relativePath) {
 }
 
-Sprite::~Sprite() {
-    SDL_DestroyTexture(texture);
-}
+// The texture is owned by TextureLoader's cache.
+Sprite::~Sprite() = default;
 
 SDL_Texture *Sprite::GetTexture(SDL_Renderer* renderer) {
     if (texture == nullptr) {

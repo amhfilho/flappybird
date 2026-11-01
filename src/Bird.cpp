@@ -3,9 +3,12 @@
 //
 
 #include "Bird.h"
+
+#include <SDL3/SDL_render.h>
 #include "Colors.h"
 #include "Constants.h"
 #include "Game.h"
+#include "TextureLoader.h"
 
 Bird::Bird(Game& game, Vector2 position) :
     game(game),
@@ -29,11 +32,20 @@ void Bird::Flap() {
 }
 
 void Bird::Draw(SDL_Renderer &renderer) {
-    SDL_FRect rect = GetRect();
-    SDL_SetRenderDrawColor(&renderer, white.r, white.g, white.b, white.a);
-    SDL_RenderFillRect(&renderer, &rect);
+    SDL_Texture* texture = TextureLoader::LoadTexture(&renderer, "Graphics/sprites.png");
+    SDL_FRect rect = {
+        Constants::Bird::Sprite::X,
+        Constants::Bird::Sprite::Y,
+        Constants::Bird::Sprite::Width,
+        Constants::Bird::Sprite::Height };
+    SDL_FRect dest = GetRect();
+    SDL_RenderTexture(&renderer, texture, &rect, &dest);
+
+    // SDL_FRect rect = GetRect();
+    // SDL_SetRenderDrawColor(&renderer, white.r, white.g, white.b, white.a);
+    // SDL_RenderFillRect(&renderer, &rect);
 }
 
 SDL_FRect Bird::GetRect() {
-    return SDL_FRect {position.x, position.y, Constants::Bird::Size, Constants::Bird::Size };
+    return SDL_FRect {position.x, position.y, Constants::Bird::Sprite::Width, Constants::Bird::Sprite::Height };
 }

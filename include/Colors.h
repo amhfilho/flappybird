@@ -26,5 +26,6 @@ extern const Color blue;
 extern const Color darkBlue;
 extern const Color white;
 extern const Color black;
+extern const Color lightBlue;
 
 

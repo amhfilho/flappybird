@@ -3,18 +3,31 @@
 //
 
 #include "Game.h"
+
+#include <SDL3/SDL.h>
+#include <SDL3_mixer/SDL_mixer.h>
+
 #include "Constants.h"
 #include "Colors.h"
+#include "TextureLoader.h"
 
 Game::Game():
     state(GameState::Start),
     window(nullptr),
     renderer(nullptr),
     bird(*this, {50.0f, 50.0f}),
-    tileSet(Constants::Sprites::TileSetPath) {
+    tileSet(Constants::Sprites::TileSetPath),
+    downPipe({100.0f, 400.0f}),
+    upperPipe({100.0f, 0.0}) {
 
     ticksCount = SDL_GetTicks();
 
+}
+
+Game::~Game() {
+    TextureLoader::Clear();
+    if (renderer) SDL_DestroyRenderer(renderer);
+    if (window) SDL_DestroyWindow(window);
 }
 
 bool Game::InitializeWindow() {
@@ -76,7 +89,7 @@ void Game::HandleInput() {
                     case SDLK_ESCAPE:
                         state = GameState::Quit;
                         break;
-                    default:
+                    case SDLK_UP:
                         if (!event.key.repeat) {
                             bird.Flap();
                         }
@@ -96,20 +109,27 @@ void Game::Update() {
     deltaTime = static_cast<float>(currentTicks - ticksCount) / 1000.0f;
     ticksCount = currentTicks;
 
+    floor.Update(deltaTime);
+
     bird.Update(deltaTime);
+
+
 }
 
 void Game::Draw() {
-    SDL_SetRenderDrawColor(renderer, black.r, black.g, black.b, black.a);
+    SDL_SetRenderDrawColor(renderer, lightBlue.r, lightBlue.g, lightBlue.b, lightBlue.a);
     SDL_RenderClear(renderer);
 
     background.Draw(renderer);
+    downPipe.Draw(renderer);
+    upperPipe.Draw(renderer);
+    floor.Draw(renderer);
 
     bird.Draw(*renderer);
 
     SDL_RenderPresent(renderer);
 }
 
-Uint64 Game::GetTicksCount() const {
+std::uint64_t Game::GetTicksCount() const {
     return ticksCount;
 }

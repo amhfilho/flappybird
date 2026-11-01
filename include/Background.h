@@ -3,6 +3,8 @@
 //
 
 #pragma once
+#include <SDL3/SDL_rect.h>
+
 #include "Sprite.h"
 
 class Background {
@@ -13,12 +15,8 @@ public:
     void Update(float deltaTime);
     void Draw(SDL_Renderer* renderer);
 
-    float GetFloorY();
-
 private:
     Sprite sprite;
     SDL_FRect background;
-    SDL_FRect floor;
-
 };
 

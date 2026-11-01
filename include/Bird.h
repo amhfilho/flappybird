@@ -3,11 +3,11 @@
 //
 
 #pragma once
-#include <SDL3/SDL_render.h>
-
 #include "Vector2.h"
 
 class Game;
+struct SDL_FRect;
+struct SDL_Renderer;
 
 class Bird {
 public:

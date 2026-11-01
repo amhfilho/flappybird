@@ -3,13 +3,18 @@
 //
 
 #pragma once
-#include <SDL3/SDL.h>
-#include <SDL3_mixer/SDL_mixer.h>
+#include <cstdint>
 
 #include "Background.h"
 #include "Bird.h"
-#include "Bird.h"
+#include "DownPipe.h"
+#include "Floor.h"
 #include "Sprite.h"
+#include "UpperPipe.h"
+
+struct SDL_Renderer;
+struct SDL_Window;
+struct MIX_Mixer;
 
 class Game {
 
@@ -19,26 +24,29 @@ public:
     };
 
     Game();
-    ~Game() = default;
+    ~Game();
 
     GameState state;
 
     bool InitializeWindow();
     void LoadData();
     void RunLoop();
-    [[nodiscard]] Uint64 GetTicksCount() const;
+    [[nodiscard]] std::uint64_t GetTicksCount() const;
 
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
     MIX_Mixer* mixer = nullptr;
 
-    Uint64 ticksCount;
+    std::uint64_t ticksCount;
     float deltaTime;
 
     Bird bird;
     Sprite tileSet;
     Background background;
+    Floor floor;
+    DownPipe downPipe;
+    UpperPipe upperPipe;
 
     void HandleInput();
     void Update();

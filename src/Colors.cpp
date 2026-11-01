@@ -14,3 +14,4 @@ const Color blue     = {13, 64, 216, 255};
 const Color darkBlue = {44, 44, 127, 255};
 const Color white    = {255, 255, 255, 255};
 const Color black    = {0, 0, 0, 255};
+const Color lightBlue= {112, 197, 206, 255};

@@ -37,6 +37,14 @@ add_executable(${PROJECT_NAME}
         src/Background.cpp
         include/Background.h
         include/Background.h
+        src/Floor.cpp
+        include/Floor.h
+        src/DownPipe.cpp
+        include/DownPipe.h
+        src/PipesPair.cpp
+        include/PipesPair.h
+        src/UpperPipe.cpp
+        include/UpperPipe.h
 
 )
 
