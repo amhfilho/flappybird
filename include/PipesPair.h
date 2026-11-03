@@ -16,6 +16,8 @@ public:
 
 
 private:
+    static float RandomFloat(float min, float max);
+
     Vector2 position;
     UpperPipe upperPipe;
     DownPipe downPipe;

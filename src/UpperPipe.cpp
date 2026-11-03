@@ -26,6 +26,10 @@ void UpperPipe::Draw(SDL_Renderer* renderer) {
     SDL_RenderTexture(renderer, texture, &srcRect, &dstRect);
 }
 
+Vector2 UpperPipe::GetPosition() const {
+    return position;
+}
+
 SDL_FRect UpperPipe::GetRect() {
     return {
         position.x,

@@ -6,6 +6,8 @@
 
 #include "Constants.h"
 
+#include <random>
+
 PipesPair::PipesPair(Vector2 position) :
     position(position),
     upperPipe({0.0f, 0.0f}),
@@ -17,8 +19,16 @@ PipesPair::PipesPair(Vector2 position) :
     float minimumUpperYOffset = 12.5f;
     float minimumLowerYOffset = 12.5f;
 
+    float centerY = RandomFloat(minimumY, maximumY);
+    upperPipe.setPosition
 
 };
+
+float PipesPair::RandomFloat(float min, float max) {
+    static std::mt19937 generator{std::random_device{}()};
+    std::uniform_real_distribution<float> distribution(min, max);
+    return distribution(generator);
+}
 
 void PipesPair::Draw(SDL_Renderer *renderer) {
 
