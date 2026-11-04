@@ -25,7 +25,15 @@ void DownPipe::Draw(SDL_Renderer* renderer) {
     SDL_RenderTexture(renderer, texture, &srcRect, &dstRect);
 }
 
-SDL_FRect DownPipe::GetRect() {
+void DownPipe::SetPosition(Vector2 position) {
+    this->position = position;
+}
+
+Vector2 DownPipe::GetPosition() const {
+    return position;
+}
+
+SDL_FRect DownPipe::GetRect() const {
     return {
         position.x,
         position.y,

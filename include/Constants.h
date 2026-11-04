@@ -40,12 +40,20 @@ namespace Constants {
             inline constexpr float Y = 168.0f;
             inline constexpr float Width = 54.0f;
             inline constexpr float Height = 404.0f;
+            inline constexpr float MinimumY = 208.0f;
+            inline constexpr float MaximumY = 549.5f;
         }
         namespace UpperPipe {
             inline constexpr float X = 52.0f;
             inline constexpr float Y = 168.0f;
             inline constexpr float Width = 54.0f;
             inline constexpr float Height = 404.0f;
+            inline constexpr float MinimumY = -341.5f;
+            inline constexpr float MaximumY = 0.0f;
+        }
+        namespace Pipes {
+            inline constexpr float MinimumVisiblePipeHeight = 62.5f;
+            inline constexpr float Speed = 100.0f;
         }
     }
 }

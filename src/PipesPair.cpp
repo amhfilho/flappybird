@@ -7,6 +7,7 @@
 #include "Constants.h"
 
 #include <random>
+#include <SDL3/SDL_log.h>
 
 PipesPair::PipesPair(Vector2 position) :
     position(position),
@@ -14,14 +15,20 @@ PipesPair::PipesPair(Vector2 position) :
     downPipe({0.0f, 0.0f}) {
 
     float x = Constants::Window::Width;
-    float minimumY = Constants::Sprites::Floor::Y - 62.5f;
-    float maximumY = 62.5f;
-    float minimumUpperYOffset = 12.5f;
-    float minimumLowerYOffset = 12.5f;
 
-    float centerY = RandomFloat(minimumY, maximumY);
-    upperPipe.setPosition
-
+    float gap = 0.0f;
+    float upperY = 0;
+    float downY = 0;
+    while (gap < 50.0f) {
+        upperY = RandomFloat(Constants::Sprites::UpperPipe::MinimumY, Constants::Sprites::UpperPipe::MaximumY);
+        downY = RandomFloat(Constants::Sprites::DownPipe::MinimumY, Constants::Sprites::DownPipe::MaximumY);
+        gap = downY - (upperY + Constants::Sprites::UpperPipe::Height);
+    }
+    SDL_Log("upperY: %f", upperY);
+    SDL_Log("downY: %f", downY);
+    SDL_Log("gap: %f", gap);
+    upperPipe.SetPosition({x, upperY});
+    downPipe.SetPosition({x, downY});
 };
 
 float PipesPair::RandomFloat(float min, float max) {
@@ -30,6 +37,16 @@ float PipesPair::RandomFloat(float min, float max) {
     return distribution(generator);
 }
 
-void PipesPair::Draw(SDL_Renderer *renderer) {
+void PipesPair::Update(float deltaTtime) {
+    Vector2 upperPosition = upperPipe.GetPosition();
+    Vector2 downPosition = downPipe.GetPosition();
+    upperPosition.x -= deltaTtime * Constants::Sprites::Pipes::Speed;
+    downPosition.x -= deltaTtime * Constants::Sprites::Pipes::Speed;
+    upperPipe.SetPosition(upperPosition);
+    downPipe.SetPosition(downPosition);
+}
 
+void PipesPair::Draw(SDL_Renderer *renderer) {
+    upperPipe.Draw(renderer);
+    downPipe.Draw(renderer);
 }

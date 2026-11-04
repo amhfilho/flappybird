@@ -16,7 +16,11 @@ public:
     void Update(float deltaTime);
     void Draw(SDL_Renderer* renderer);
 
-    SDL_FRect GetRect();
+    void SetPosition(Vector2 position);
+
+    SDL_FRect GetRect() const;
+
+    Vector2 GetPosition() const;
 
 private:
     Vector2 position;

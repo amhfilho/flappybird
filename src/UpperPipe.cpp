@@ -30,7 +30,11 @@ Vector2 UpperPipe::GetPosition() const {
     return position;
 }
 
-SDL_FRect UpperPipe::GetRect() {
+void UpperPipe::SetPosition(Vector2 position) {
+    this->position = position;
+}
+
+SDL_FRect UpperPipe::GetRect() const {
     return {
         position.x,
         position.y,

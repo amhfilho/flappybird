@@ -14,6 +14,9 @@ public:
     void Update(float deltTtime);
     void Draw(SDL_Renderer* renderer);
 
+    const UpperPipe& GetUpperPipe() const { return upperPipe; }
+    const DownPipe& GetDownPipe() const { return downPipe; }
+
 
 private:
     static float RandomFloat(float min, float max);

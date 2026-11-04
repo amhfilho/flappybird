@@ -19,7 +19,7 @@ public:
 
     void Flap();
 
-    SDL_FRect GetRect();
+    SDL_FRect GetRect() const;
 
 private:
     Game& game;

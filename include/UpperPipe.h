@@ -17,7 +17,9 @@ public:
 
     Vector2 GetPosition() const;
 
-    SDL_FRect GetRect();
+    void SetPosition(Vector2 position);
+
+    SDL_FRect GetRect() const;
 
 private:
     Vector2 position;

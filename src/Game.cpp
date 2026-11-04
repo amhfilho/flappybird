@@ -17,11 +17,9 @@ Game::Game():
     renderer(nullptr),
     bird(*this, {50.0f, 50.0f}),
     tileSet(Constants::Sprites::TileSetPath),
-    downPipe({100.0f, 400.0f}),
-    upperPipe({100.0f, 0.0}) {
+    pipesPair({0.0f, 0.0f}) {
 
     ticksCount = SDL_GetTicks();
-
 }
 
 Game::~Game() {
@@ -110,10 +108,25 @@ void Game::Update() {
     ticksCount = currentTicks;
 
     floor.Update(deltaTime);
-
     bird.Update(deltaTime);
+    pipesPair.Update(deltaTime);
 
+    CheckCollisions();
+}
 
+void Game::CheckCollisions() {
+    const UpperPipe& upperPipe = pipesPair.GetUpperPipe();
+    const DownPipe& downPipe = pipesPair.GetDownPipe();
+    SDL_FRect upperRect = upperPipe.GetRect();
+    SDL_FRect downRect = downPipe.GetRect();
+
+    const SDL_FRect birdRect = bird.GetRect();
+
+    if (SDL_HasRectIntersectionFloat(&birdRect, &upperRect) ||
+        SDL_HasRectIntersectionFloat(&birdRect, &downRect)) {
+        //state = GameState::GameOver;
+        SDL_Log("Bird collided with a pipe!");
+    }
 }
 
 void Game::Draw() {
@@ -121,10 +134,8 @@ void Game::Draw() {
     SDL_RenderClear(renderer);
 
     background.Draw(renderer);
-    downPipe.Draw(renderer);
-    upperPipe.Draw(renderer);
+    pipesPair.Draw(renderer);
     floor.Draw(renderer);
-
     bird.Draw(*renderer);
 
     SDL_RenderPresent(renderer);

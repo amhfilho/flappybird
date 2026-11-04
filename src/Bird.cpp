@@ -4,6 +4,7 @@
 
 #include "Bird.h"
 
+#include <SDL3/SDL_log.h>
 #include <SDL3/SDL_render.h>
 #include "Colors.h"
 #include "Constants.h"
@@ -40,12 +41,8 @@ void Bird::Draw(SDL_Renderer &renderer) {
         Constants::Bird::Sprite::Height };
     SDL_FRect dest = GetRect();
     SDL_RenderTexture(&renderer, texture, &rect, &dest);
-
-    // SDL_FRect rect = GetRect();
-    // SDL_SetRenderDrawColor(&renderer, white.r, white.g, white.b, white.a);
-    // SDL_RenderFillRect(&renderer, &rect);
 }
 
-SDL_FRect Bird::GetRect() {
+SDL_FRect Bird::GetRect() const {
     return SDL_FRect {position.x, position.y, Constants::Bird::Sprite::Width, Constants::Bird::Sprite::Height };
 }

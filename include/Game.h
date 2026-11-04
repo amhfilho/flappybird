@@ -9,6 +9,7 @@
 #include "Bird.h"
 #include "DownPipe.h"
 #include "Floor.h"
+#include "PipesPair.h"
 #include "Sprite.h"
 #include "UpperPipe.h"
 
@@ -32,6 +33,9 @@ public:
     void LoadData();
     void RunLoop();
     [[nodiscard]] std::uint64_t GetTicksCount() const;
+    [[nodiscard]] PipesPair& GetPipesPair() { return pipesPair; }
+    [[nodiscard]] const PipesPair& GetPipesPair() const { return pipesPair; }
+
 
 private:
     SDL_Window* window;
@@ -45,11 +49,13 @@ private:
     Sprite tileSet;
     Background background;
     Floor floor;
-    DownPipe downPipe;
-    UpperPipe upperPipe;
+    PipesPair pipesPair;
 
     void HandleInput();
     void Update();
+
+    void CheckCollisions();
+
     void Draw();
 };
 
