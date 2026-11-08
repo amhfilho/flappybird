@@ -12,7 +12,6 @@ public:
     Background();
     ~Background() = default;
 
-    void Update(float deltaTime);
     void Draw(SDL_Renderer* renderer);
 
 private:

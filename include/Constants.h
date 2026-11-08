@@ -21,23 +21,22 @@ namespace Constants {
         }
         namespace Bird {
             inline constexpr float Size = 30.0f;
+            inline constexpr float Width = 35.0f;
+            inline constexpr float Height = 25.0f;
+            inline constexpr double DownAngle = 55;
+            inline constexpr double UpAngle = -45;
+            inline constexpr float AnimationFPS = 24.0f;
             namespace Sprite1 {
-                inline constexpr float X = 389.0f;
-                inline constexpr float Y = 3.0f;
-                inline constexpr float Width = 277.0f;
-                inline constexpr float Height = 202.0f;
+                inline constexpr float X = 0.0f;
+                inline constexpr float Y = 0.0f;
             }
             namespace Sprite2 {
-                inline constexpr float X = 389.0f;
-                inline constexpr float Y = 3.0f;
-                inline constexpr float Width = 277.0f;
-                inline constexpr float Height = 202.0f;
+                inline constexpr float X = 0.0f;
+                inline constexpr float Y = 25.0f;
             }
             namespace Sprite3 {
-                inline constexpr float X = 389.0f;
-                inline constexpr float Y = 3.0f;
-                inline constexpr float Width = 277.0f;
-                inline constexpr float Height = 202.0f;
+                inline constexpr float X = 0.0f;
+                inline constexpr float Y = 50.0f;
             }
         }
         namespace Floor {

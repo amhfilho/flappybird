@@ -15,7 +15,24 @@ Bird::Bird(Game& game, Vector2 position) :
     game(game),
     position(position),
     velocity(0.0f),
-    gravity(250.0f) {
+    gravity(250.0f),
+    currentFrame(0.0f) {
+
+    spriteRects.push_back({
+        Constants::Sprites::Bird::Sprite1::X,
+        Constants::Sprites::Bird::Sprite1::Y,
+        Constants::Sprites::Bird::Width,
+        Constants::Sprites::Bird::Height });
+    spriteRects.push_back({
+        Constants::Sprites::Bird::Sprite2::X,
+        Constants::Sprites::Bird::Sprite2::Y,
+        Constants::Sprites::Bird::Width,
+        Constants::Sprites::Bird::Height });
+    spriteRects.push_back({
+        Constants::Sprites::Bird::Sprite3::X,
+        Constants::Sprites::Bird::Sprite3::Y,
+        Constants::Sprites::Bird::Width,
+        Constants::Sprites::Bird::Height });
 
 }
 
@@ -26,6 +43,13 @@ void Bird::Update(float deltaTime) {
     if (rect.y + rect.h >= Constants::Window::Height - Constants::Sprites::Floor::Height) {
         position.y = Constants::Window::Height - Constants::Sprites::Floor::Height - rect.h;
     }
+
+    currentFrame += Constants::Sprites::Bird::AnimationFPS * deltaTime;
+
+    // Wrap current frame if needed
+    while (currentFrame >= spriteRects.size()) {
+        currentFrame -= spriteRects.size();
+    }
 }
 
 void Bird::Flap() {
@@ -34,15 +58,15 @@ void Bird::Flap() {
 
 void Bird::Draw(SDL_Renderer &renderer) {
     SDL_Texture* texture = TextureLoader::LoadTexture(&renderer, "Graphics/sprites.png");
-    SDL_FRect rect = {
-        Constants::Bird::Sprite::X,
-        Constants::Bird::Sprite::Y,
-        Constants::Bird::Sprite::Width,
-        Constants::Bird::Sprite::Height };
+    SDL_FRect sprite = spriteRects.at(currentFrame);
     SDL_FRect dest = GetRect();
-    SDL_RenderTexture(&renderer, texture, &rect, &dest);
+    double angle = Constants::Sprites::Bird::DownAngle;
+    if (velocity < 0.0f) {
+        angle = Constants::Sprites::Bird::UpAngle;
+    }
+    SDL_RenderTextureRotated(&renderer, texture, &sprite, &dest, angle, nullptr, SDL_FLIP_NONE);
 }
 
 SDL_FRect Bird::GetRect() const {
-    return SDL_FRect {position.x, position.y, Constants::Bird::Sprite::Width, Constants::Bird::Sprite::Height };
+    return SDL_FRect {position.x, position.y, Constants::Sprites::Bird::Width, Constants::Sprites::Bird::Height };
 }

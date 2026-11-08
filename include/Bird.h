@@ -3,6 +3,9 @@
 //
 
 #pragma once
+#include <vector>
+#include <SDL3/SDL_render.h>
+
 #include "Vector2.h"
 
 class Game;
@@ -26,4 +29,7 @@ private:
     Vector2 position;
     float velocity;
     float gravity;
+
+    std::vector<SDL_FRect> spriteRects;
+    float currentFrame;
 };

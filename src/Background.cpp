@@ -19,10 +19,6 @@ Background::Background() :
     };
 }
 
-void Background::Update(float deltaTime) {
-    
-}
-
 void Background::Draw(SDL_Renderer* renderer) {
     SDL_Texture *texture = sprite.GetTexture(renderer);
 
