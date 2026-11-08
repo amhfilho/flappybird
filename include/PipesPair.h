@@ -14,14 +14,15 @@ public:
     void Update(float deltTtime);
     void Draw(SDL_Renderer* renderer);
 
+    bool IsActive() const { return active; }
     const UpperPipe& GetUpperPipe() const { return upperPipe; }
     const DownPipe& GetDownPipe() const { return downPipe; }
 
 
 private:
-    static float RandomFloat(float min, float max);
-
     Vector2 position;
     UpperPipe upperPipe;
     DownPipe downPipe;
+
+    bool active;
 };

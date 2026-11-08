@@ -45,6 +45,8 @@ add_executable(${PROJECT_NAME}
         include/PipesPair.h
         src/UpperPipe.cpp
         include/UpperPipe.h
+        src/Random.cpp
+        include/Random.h
 
 )
 

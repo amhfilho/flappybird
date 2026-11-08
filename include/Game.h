@@ -30,12 +30,8 @@ public:
     GameState state;
 
     bool InitializeWindow();
-    void LoadData();
     void RunLoop();
     [[nodiscard]] std::uint64_t GetTicksCount() const;
-    [[nodiscard]] PipesPair& GetPipesPair() { return pipesPair; }
-    [[nodiscard]] const PipesPair& GetPipesPair() const { return pipesPair; }
-
 
 private:
     SDL_Window* window;
@@ -49,7 +45,10 @@ private:
     Sprite tileSet;
     Background background;
     Floor floor;
-    PipesPair pipesPair;
+
+    std::vector<PipesPair> pipesPairs;
+    Uint64 lastPipeDeployTime;
+    int pipeDeployInterval;
 
     void HandleInput();
     void Update();

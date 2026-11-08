@@ -9,6 +9,7 @@
 
 #include "Constants.h"
 #include "Colors.h"
+#include "Random.h"
 #include "TextureLoader.h"
 
 Game::Game():
@@ -17,7 +18,8 @@ Game::Game():
     renderer(nullptr),
     bird(*this, {50.0f, 50.0f}),
     tileSet(Constants::Sprites::TileSetPath),
-    pipesPair({0.0f, 0.0f}) {
+    lastPipeDeployTime(0),
+    pipeDeployInterval(2000) {
 
     ticksCount = SDL_GetTicks();
 }
@@ -59,10 +61,6 @@ bool Game::InitializeWindow() {
     }
 
     return true;
-}
-
-void Game::LoadData() {
-
 }
 
 void Game::RunLoop()
@@ -109,24 +107,39 @@ void Game::Update() {
 
     floor.Update(deltaTime);
     bird.Update(deltaTime);
-    pipesPair.Update(deltaTime);
+
+    if (currentTicks - lastPipeDeployTime > pipeDeployInterval) {
+        pipesPairs.emplace_back(Vector2{0.0f, 0.0f});
+        lastPipeDeployTime = currentTicks;
+        pipeDeployInterval = Random::Double(2000, 3500);
+    }
+
+    for (auto& pair : pipesPairs) {
+        pair.Update(deltaTime);
+    }
+
+    // Erase inactive pairs; the vector owns them by value, so their memory is released
+    std::erase_if(pipesPairs, [](const PipesPair& pair) { return !pair.IsActive(); });
 
     CheckCollisions();
 }
 
 void Game::CheckCollisions() {
-    const UpperPipe& upperPipe = pipesPair.GetUpperPipe();
-    const DownPipe& downPipe = pipesPair.GetDownPipe();
-    SDL_FRect upperRect = upperPipe.GetRect();
-    SDL_FRect downRect = downPipe.GetRect();
+    for (auto& pair : pipesPairs) {
+        const UpperPipe& upperPipe = pair.GetUpperPipe();
+        const DownPipe& downPipe = pair.GetDownPipe();
+        SDL_FRect upperRect = upperPipe.GetRect();
+        SDL_FRect downRect = downPipe.GetRect();
 
-    const SDL_FRect birdRect = bird.GetRect();
+        const SDL_FRect birdRect = bird.GetRect();
 
-    if (SDL_HasRectIntersectionFloat(&birdRect, &upperRect) ||
-        SDL_HasRectIntersectionFloat(&birdRect, &downRect)) {
-        //state = GameState::GameOver;
-        SDL_Log("Bird collided with a pipe!");
+        if (SDL_HasRectIntersectionFloat(&birdRect, &upperRect) ||
+            SDL_HasRectIntersectionFloat(&birdRect, &downRect)) {
+            //state = GameState::GameOver;
+            SDL_Log("Bird collided with a pipe!");
+        }
     }
+
 }
 
 void Game::Draw() {
@@ -134,7 +147,11 @@ void Game::Draw() {
     SDL_RenderClear(renderer);
 
     background.Draw(renderer);
-    pipesPair.Draw(renderer);
+
+    for (auto& pair : pipesPairs) {
+        pair.Draw(renderer);
+    }
+
     floor.Draw(renderer);
     bird.Draw(*renderer);
 
