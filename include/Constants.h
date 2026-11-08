@@ -24,8 +24,13 @@ namespace Constants {
             inline constexpr float Width = 35.0f;
             inline constexpr float Height = 25.0f;
             inline constexpr double DownAngle = 55;
+            inline constexpr double DownAngleIncrement = 2;
             inline constexpr double UpAngle = -45;
+            inline constexpr double UpAngleDecrement = -5;
             inline constexpr float AnimationFPS = 24.0f;
+            inline constexpr float Gravity = 500.0f;
+            inline constexpr float FlapSpeed = 200.0f;
+
             namespace Sprite1 {
                 inline constexpr float X = 0.0f;
                 inline constexpr float Y = 0.0f;
@@ -62,8 +67,8 @@ namespace Constants {
             inline constexpr float MaximumY = 0.0f;
         }
         namespace Pipes {
-            inline constexpr float MinimumVisiblePipeHeight = 62.5f;
             inline constexpr float Speed = 100.0f;
+            inline constexpr float MinimumInitialGap = 100.0f;
         }
     }
 }

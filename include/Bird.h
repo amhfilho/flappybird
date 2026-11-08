@@ -32,4 +32,5 @@ private:
 
     std::vector<SDL_FRect> spriteRects;
     float currentFrame;
+    double angle;
 };

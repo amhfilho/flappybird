@@ -8,6 +8,7 @@
 #include "Random.h"
 
 #include <SDL3/SDL_log.h>
+#include <algorithm>
 
 PipesPair::PipesPair(Vector2 position) :
     position(position),
@@ -17,14 +18,16 @@ PipesPair::PipesPair(Vector2 position) :
 
     float x = Constants::Window::Width;
 
-    float gap = 0.0f;
-    float upperY = 0;
-    float downY = 0;
-    while (gap < 50.0f) {
-        upperY = Random::Float(Constants::Sprites::UpperPipe::MinimumY, Constants::Sprites::UpperPipe::MaximumY);
-        downY = Random::Float(Constants::Sprites::DownPipe::MinimumY, Constants::Sprites::DownPipe::MaximumY);
-        gap = downY - (upperY + Constants::Sprites::UpperPipe::Height);
-    }
+    namespace Sprites = Constants::Sprites;
+
+    // Fixed gap: downY is derived from upperY, so no search is needed.
+    // Restrict upperY so both pipes stay inside their valid Y ranges.
+    const float gapOffset = Sprites::UpperPipe::Height + Sprites::Pipes::MinimumInitialGap;
+    const float minUpperY = std::max(Sprites::UpperPipe::MinimumY, Sprites::DownPipe::MinimumY - gapOffset);
+    const float maxUpperY = std::min(Sprites::UpperPipe::MaximumY, Sprites::DownPipe::MaximumY - gapOffset);
+
+    const float upperY = Random::Float(minUpperY, maxUpperY);
+    const float downY = upperY + gapOffset;
     upperPipe.SetPosition({x, upperY});
     downPipe.SetPosition({x, downY});
 };

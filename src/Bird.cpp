@@ -15,8 +15,9 @@ Bird::Bird(Game& game, Vector2 position) :
     game(game),
     position(position),
     velocity(0.0f),
-    gravity(250.0f),
-    currentFrame(0.0f) {
+    gravity(Constants::Sprites::Bird::Gravity),
+    currentFrame(0.0f),
+    angle(0) {
 
     spriteRects.push_back({
         Constants::Sprites::Bird::Sprite1::X,
@@ -53,17 +54,23 @@ void Bird::Update(float deltaTime) {
 }
 
 void Bird::Flap() {
-    velocity = -100.0f;
+    velocity = -Constants::Sprites::Bird::FlapSpeed;
 }
 
 void Bird::Draw(SDL_Renderer &renderer) {
     SDL_Texture* texture = TextureLoader::LoadTexture(&renderer, "Graphics/sprites.png");
     SDL_FRect sprite = spriteRects.at(currentFrame);
     SDL_FRect dest = GetRect();
-    double angle = Constants::Sprites::Bird::DownAngle;
+    if (angle < Constants::Sprites::Bird::DownAngle) {
+        angle += Constants::Sprites::Bird::DownAngleIncrement;
+    }
     if (velocity < 0.0f) {
+        if (angle > Constants::Sprites::Bird::UpAngle) {
+            angle -= Constants::Sprites::Bird::UpAngleDecrement;
+        }
         angle = Constants::Sprites::Bird::UpAngle;
     }
+
     SDL_RenderTextureRotated(&renderer, texture, &sprite, &dest, angle, nullptr, SDL_FLIP_NONE);
 }
 
