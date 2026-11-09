@@ -86,24 +86,34 @@ void Game::HandleInput() {
                         state = GameState::Quit;
                         break;
                     case SDLK_UP:
-                        if (!event.key.repeat) {
+                        if (!event.key.repeat && state != GameState::GameOver) {
                             bird.Flap();
                         }
                         break;
                 }
                 break;
-
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
+                if (event.button.button == SDL_BUTTON_LEFT && state != GameState::GameOver) {
+                    bird.Flap();
+                }
+                break;
         }
     }
 }
 
 void Game::Update() {
-    if (state == GameState::GameOver) {
+    if (state == GameState::GameOver || state == GameState::Quit) {
         return;
     }
     Uint64 currentTicks = SDL_GetTicks();
     deltaTime = static_cast<float>(currentTicks - ticksCount) / 1000.0f;
     ticksCount = currentTicks;
+
+    // Freeze the world briefly after hitting a pipe. ticksCount keeps advancing
+    // so deltaTime doesn't spike when the freeze ends.
+    if (currentTicks < freezeUntil) {
+        return;
+    }
 
     floor.Update(deltaTime);
     bird.Update(deltaTime);
@@ -125,6 +135,7 @@ void Game::Update() {
 }
 
 void Game::CheckCollisions() {
+    //Collision with pipe
     for (auto& pair : pipesPairs) {
         const UpperPipe& upperPipe = pair.GetUpperPipe();
         const DownPipe& downPipe = pair.GetDownPipe();
@@ -135,12 +146,18 @@ void Game::CheckCollisions() {
 
         if (SDL_HasRectIntersectionFloat(&birdRect, &upperRect) ||
             SDL_HasRectIntersectionFloat(&birdRect, &downRect)) {
-            //state = GameState::GameOver;
-            SDL_Log("Bird collided with a pipe!");
+            if (state != GameState::BirdHurt) {
+                freezeUntil = SDL_GetTicks() + Constants::HitFreezeMs;
+            }
+            state = GameState::BirdHurt;
+            bird.OnPipeCollide();
         }
     }
-
+    if (bird.IsInFloor()) {
+        state = GameState::GameOver;
+    }
 }
+
 
 void Game::Draw() {
     SDL_SetRenderDrawColor(renderer, lightBlue.r, lightBlue.g, lightBlue.b, lightBlue.a);
@@ -155,9 +172,29 @@ void Game::Draw() {
     floor.Draw(renderer);
     bird.Draw(*renderer);
 
+    DrawGameOver();
+
     SDL_RenderPresent(renderer);
+}
+
+void Game::DrawGameOver() {
+    if (state == GameState::GameOver) {
+        namespace GameOver = Constants::Sprites::GameOver;
+        SDL_FRect gameOverRect = {GameOver::X, GameOver::Y, GameOver::Width, GameOver::Height};
+        SDL_FRect dstRect = {Constants::Window::Width / 2-gameOverRect.w / 2,
+            gameOverRect.y,
+            gameOverRect.w,
+            gameOverRect.h };
+
+        SDL_Texture* texture = TextureLoader::LoadTexture(renderer, Constants::Sprites::TileSetPath);
+        SDL_RenderTexture(renderer, texture, &gameOverRect, &dstRect);
+    }
 }
 
 std::uint64_t Game::GetTicksCount() const {
     return ticksCount;
+}
+
+Game::GameState Game::GetGameState() const {
+    return state;
 }

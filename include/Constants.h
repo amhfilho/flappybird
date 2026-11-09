@@ -5,6 +5,9 @@
 #pragma once
 
 namespace Constants {
+    // How long the game freezes after the bird hits a pipe
+    inline constexpr unsigned int HitFreezeMs = 500;
+
     namespace Window {
         inline constexpr const char* Title = "SDL3 Flappy Bird";
         inline constexpr int Width = 556;
@@ -69,6 +72,12 @@ namespace Constants {
         namespace Pipes {
             inline constexpr float Speed = 100.0f;
             inline constexpr float MinimumInitialGap = 100.0f;
+        }
+        namespace GameOver {
+            inline constexpr float X = 132.0f;
+            inline constexpr float Y = 150.0f;
+            inline constexpr float Width = 231.0f;
+            inline constexpr float Height = 204.0f;
         }
     }
 }

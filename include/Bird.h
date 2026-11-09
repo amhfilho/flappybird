@@ -24,6 +24,10 @@ public:
 
     SDL_FRect GetRect() const;
 
+    bool IsInFloor() const;
+
+    void OnPipeCollide();
+
 private:
     Game& game;
     Vector2 position;
@@ -33,4 +37,6 @@ private:
     std::vector<SDL_FRect> spriteRects;
     float currentFrame;
     double angle;
+
+    bool inFloor;
 };

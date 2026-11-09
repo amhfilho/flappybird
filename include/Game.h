@@ -21,7 +21,7 @@ class Game {
 
 public:
     enum class GameState {
-        Start, Playing, GameOver, Quit
+        Start, Playing, BirdHurt, GameOver, Quit
     };
 
     Game();
@@ -32,6 +32,7 @@ public:
     bool InitializeWindow();
     void RunLoop();
     [[nodiscard]] std::uint64_t GetTicksCount() const;
+    GameState GetGameState() const;
 
 private:
     SDL_Window* window;
@@ -49,11 +50,14 @@ private:
     std::vector<PipesPair> pipesPairs;
     Uint64 lastPipeDeployTime;
     int pipeDeployInterval;
+    Uint64 freezeUntil = 0;
 
     void HandleInput();
     void Update();
 
     void CheckCollisions();
+
+    void DrawGameOver();
 
     void Draw();
 };
