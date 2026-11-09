@@ -23,6 +23,8 @@ namespace Constants {
             inline constexpr float Height = 202.0f;
         }
         namespace Bird {
+            inline constexpr float StartX = 50.0f;
+            inline constexpr float StartY = 50.0f;
             inline constexpr float Size = 30.0f;
             inline constexpr float Width = 35.0f;
             inline constexpr float Height = 25.0f;

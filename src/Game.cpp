@@ -16,7 +16,7 @@ Game::Game():
     state(GameState::Start),
     window(nullptr),
     renderer(nullptr),
-    bird(*this, {50.0f, 50.0f}),
+    bird(*this, {Constants::Sprites::Bird::StartX, Constants::Sprites::Bird::StartY}),
     tileSet(Constants::Sprites::TileSetPath),
     lastPipeDeployTime(0),
     pipeDeployInterval(2000) {
@@ -93,8 +93,13 @@ void Game::HandleInput() {
                 }
                 break;
             case SDL_EVENT_MOUSE_BUTTON_DOWN:
-                if (event.button.button == SDL_BUTTON_LEFT && state != GameState::GameOver) {
-                    bird.Flap();
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    if (state != GameState::GameOver) {
+                        bird.Flap();
+                    }
+                    else {
+                        Reset();
+                    }
                 }
                 break;
         }
@@ -197,4 +202,13 @@ std::uint64_t Game::GetTicksCount() const {
 
 Game::GameState Game::GetGameState() const {
     return state;
+}
+
+void Game::Reset() {
+    state = GameState::Start;
+    bird.Reset();
+    pipesPairs.clear();
+    lastPipeDeployTime = 0;
+    pipeDeployInterval = 0;
+    freezeUntil = 0;
 }

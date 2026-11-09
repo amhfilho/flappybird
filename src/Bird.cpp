@@ -90,3 +90,11 @@ SDL_FRect Bird::GetRect() const {
 bool Bird::IsInFloor() const {
     return inFloor;
 }
+
+void Bird::Reset() {
+    position = Vector2(Constants::Sprites::Bird::StartX, Constants::Sprites::Bird::StartY);
+    velocity = 0.0f;
+    angle = 0;
+    inFloor = false;
+    currentFrame = 0.0f;
+}

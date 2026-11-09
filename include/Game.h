@@ -52,6 +52,8 @@ private:
     int pipeDeployInterval;
     Uint64 freezeUntil = 0;
 
+    void Reset();
+
     void HandleInput();
     void Update();
 

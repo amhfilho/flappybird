@@ -28,6 +28,8 @@ public:
 
     void OnPipeCollide();
 
+    void Reset();
+
 private:
     Game& game;
     Vector2 position;
