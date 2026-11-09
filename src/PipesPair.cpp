@@ -9,6 +9,7 @@
 
 #include <SDL3/SDL_log.h>
 #include <algorithm>
+#include <SDL3/SDL_rect.h>
 
 PipesPair::PipesPair(Vector2 position) :
     position(position),
@@ -48,4 +49,17 @@ void PipesPair::Draw(SDL_Renderer *renderer) {
     if (!active) return;
     upperPipe.Draw(renderer);
     downPipe.Draw(renderer);
+}
+
+SDL_FRect PipesPair::GetScoreRect() const {
+    const Vector2 upperPosition = upperPipe.GetPosition();
+    const Vector2 downPosition = downPipe.GetPosition();
+    const float gapTop = upperPosition.y + Constants::Sprites::UpperPipe::Height;
+
+    return SDL_FRect{
+        upperPosition.x,
+        gapTop,
+        Constants::Sprites::UpperPipe::Width,
+        downPosition.y - gapTop
+    };
 }

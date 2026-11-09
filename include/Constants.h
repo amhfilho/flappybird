@@ -73,7 +73,13 @@ namespace Constants {
         }
         namespace Pipes {
             inline constexpr float Speed = 100.0f;
-            inline constexpr float MinimumInitialGap = 100.0f;
+            inline constexpr float MinimumInitialGap = 90.0f;
+        }
+        namespace StartScreen {
+            inline constexpr float X = 131.0f;
+            inline constexpr float Y = 0.0f;
+            inline constexpr float Width = 179.0f;
+            inline constexpr float Height = 153.0f;
         }
         namespace GameOver {
             inline constexpr float X = 132.0f;
@@ -81,5 +87,10 @@ namespace Constants {
             inline constexpr float Width = 231.0f;
             inline constexpr float Height = 204.0f;
         }
+    }
+
+    namespace Font {
+        inline constexpr const char* Path = "Fonts/PublicPixel.ttf";
+        inline constexpr float Size = 40.0f;
     }
 }

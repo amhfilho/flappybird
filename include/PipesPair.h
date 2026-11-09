@@ -18,6 +18,9 @@ public:
     const UpperPipe& GetUpperPipe() const { return upperPipe; }
     const DownPipe& GetDownPipe() const { return downPipe; }
 
+    SDL_FRect GetScoreRect() const;
+    bool IsScored() const { return scored; }
+    void MarkScored() { scored = true; }
 
 private:
     Vector2 position;
@@ -25,4 +28,5 @@ private:
     DownPipe downPipe;
 
     bool active;
+    bool scored = false;
 };

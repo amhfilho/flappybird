@@ -47,6 +47,8 @@ add_executable(${PROJECT_NAME}
         include/UpperPipe.h
         src/Random.cpp
         include/Random.h
+        src/FontLoader.cpp
+        include/FontLoader.h
 
 )
 

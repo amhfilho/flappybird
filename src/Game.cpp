@@ -9,6 +9,7 @@
 
 #include "Constants.h"
 #include "Colors.h"
+#include "FontLoader.h"
 #include "Random.h"
 #include "TextureLoader.h"
 
@@ -19,7 +20,8 @@ Game::Game():
     bird(*this, {Constants::Sprites::Bird::StartX, Constants::Sprites::Bird::StartY}),
     tileSet(Constants::Sprites::TileSetPath),
     lastPipeDeployTime(0),
-    pipeDeployInterval(2000) {
+    pipeDeployInterval(2000),
+    score(0) {
 
     ticksCount = SDL_GetTicks();
 }
@@ -60,6 +62,8 @@ bool Game::InitializeWindow() {
         return false;
     }
 
+    font = std::make_unique<FontLoader>(Constants::Font::Path, Constants::Font::Size);
+
     return true;
 }
 
@@ -86,7 +90,7 @@ void Game::HandleInput() {
                         state = GameState::Quit;
                         break;
                     case SDLK_UP:
-                        if (!event.key.repeat && state != GameState::GameOver) {
+                        if (!event.key.repeat && state == GameState::Playing) {
                             bird.Flap();
                         }
                         break;
@@ -94,10 +98,16 @@ void Game::HandleInput() {
                 break;
             case SDL_EVENT_MOUSE_BUTTON_DOWN:
                 if (event.button.button == SDL_BUTTON_LEFT) {
-                    if (state != GameState::GameOver) {
+                    SDL_Log("Mouse button down");
+                    if (state == GameState::Playing) {
                         bird.Flap();
                     }
-                    else {
+                    else if (state == GameState::Start) {
+                        state = GameState::Playing;
+                        ticksCount = SDL_GetTicks();
+                    }
+                    else if (state == GameState::GameOver) {
+                        state = GameState::Start;
                         Reset();
                     }
                 }
@@ -107,7 +117,7 @@ void Game::HandleInput() {
 }
 
 void Game::Update() {
-    if (state == GameState::GameOver || state == GameState::Quit) {
+    if (state == GameState::Start || state == GameState::GameOver || state == GameState::Quit) {
         return;
     }
     Uint64 currentTicks = SDL_GetTicks();
@@ -137,6 +147,8 @@ void Game::Update() {
     std::erase_if(pipesPairs, [](const PipesPair& pair) { return !pair.IsActive(); });
 
     CheckCollisions();
+
+    UpdateScore();
 }
 
 void Game::CheckCollisions() {
@@ -170,16 +182,38 @@ void Game::Draw() {
 
     background.Draw(renderer);
 
+
+    DrawStartScreen();
+
     for (auto& pair : pipesPairs) {
         pair.Draw(renderer);
     }
 
+    WriteScore();
+
     floor.Draw(renderer);
-    bird.Draw(*renderer);
+
+    if (state != GameState::Start) {
+        bird.Draw(*renderer);
+    }
 
     DrawGameOver();
 
     SDL_RenderPresent(renderer);
+}
+
+void Game::DrawStartScreen() {
+    if (state == GameState::Start) {
+        namespace StartScreen = Constants::Sprites::StartScreen;
+        SDL_FRect startRect = {StartScreen::X, StartScreen::Y, StartScreen::Width, StartScreen::Height};
+        SDL_FRect dstRect = {(Constants::Window::Width - startRect.w) / 2,
+            50.0f,
+            startRect.w,
+            startRect.h };
+
+        SDL_Texture* texture = TextureLoader::LoadTexture(renderer, Constants::Sprites::TileSetPath);
+        SDL_RenderTexture(renderer, texture, &startRect, &dstRect);
+    }
 }
 
 void Game::DrawGameOver() {
@@ -193,6 +227,35 @@ void Game::DrawGameOver() {
 
         SDL_Texture* texture = TextureLoader::LoadTexture(renderer, Constants::Sprites::TileSetPath);
         SDL_RenderTexture(renderer, texture, &gameOverRect, &dstRect);
+    }
+}
+
+void Game::WriteScore() {
+    if (state != GameState::Start) {
+        std::string text = std::to_string(score);
+        const float topMargin = 20.0f;
+        const float x = (Constants::Window::Width - font->MeasureTextWidth(text)) / 2.0f;
+        // DrawText anchors the bottom edge, so add the font height to keep the top at topMargin
+        const float bottomY = topMargin + static_cast<float>(font->GetHeight());
+        font->DrawText(renderer, text, x, bottomY, white);
+    }
+}
+
+void Game::UpdateScore() {
+    if (state == GameState::Playing) {
+        const SDL_FRect birdRect = bird.GetRect();
+        for (auto& pair : pipesPairs) {
+            if (pair.IsActive()) {
+                const SDL_FRect scoreRect = pair.GetScoreRect();
+                // Score only once the bird has fully left the gap on the right side
+                // (a collision would have ended the Playing state before this point).
+                if (!pair.IsScored() && birdRect.x > scoreRect.x + scoreRect.w) {
+                    score++;
+                    pair.MarkScored();
+                }
+            }
+        }
+
     }
 }
 
@@ -211,4 +274,5 @@ void Game::Reset() {
     lastPipeDeployTime = 0;
     pipeDeployInterval = 0;
     freezeUntil = 0;
+    score = 0;
 }

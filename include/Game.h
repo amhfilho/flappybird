@@ -13,6 +13,7 @@
 #include "Sprite.h"
 #include "UpperPipe.h"
 
+class FontLoader;
 struct SDL_Renderer;
 struct SDL_Window;
 struct MIX_Mixer;
@@ -52,15 +53,26 @@ private:
     int pipeDeployInterval;
     Uint64 freezeUntil = 0;
 
+    int score;
+
+    std::unique_ptr<FontLoader> font;
+
     void Reset();
 
     void HandleInput();
+
+    void UpdateScore();
+
     void Update();
 
     void CheckCollisions();
 
     void DrawGameOver();
 
+    void WriteScore();
+
     void Draw();
+
+    void DrawStartScreen();
 };
 
