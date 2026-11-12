@@ -17,11 +17,12 @@ Game::Game():
     state(GameState::Start),
     window(nullptr),
     renderer(nullptr),
-    bird(*this, {Constants::Sprites::Bird::StartX, Constants::Sprites::Bird::StartY}),
     tileSet(Constants::Sprites::TileSetPath),
+    bird(*this, {Constants::Sprites::Bird::StartX, Constants::Sprites::Bird::StartY}),
     lastPipeDeployTime(0),
     pipeDeployInterval(2000),
-    score(0) {
+    score(0),
+    best(0) {
 
     ticksCount = SDL_GetTicks();
 }
@@ -89,7 +90,7 @@ void Game::HandleInput() {
                     case SDLK_ESCAPE:
                         state = GameState::Quit;
                         break;
-                    case SDLK_UP:
+                    case SDLK_SPACE:
                         if (!event.key.repeat && state == GameState::Playing) {
                             bird.Flap();
                         }
@@ -98,7 +99,6 @@ void Game::HandleInput() {
                 break;
             case SDL_EVENT_MOUSE_BUTTON_DOWN:
                 if (event.button.button == SDL_BUTTON_LEFT) {
-                    SDL_Log("Mouse button down");
                     if (state == GameState::Playing) {
                         bird.Flap();
                     }
@@ -180,21 +180,20 @@ void Game::Draw() {
     SDL_SetRenderDrawColor(renderer, lightBlue.r, lightBlue.g, lightBlue.b, lightBlue.a);
     SDL_RenderClear(renderer);
 
-    background.Draw(renderer);
-
+    background.Draw(renderer, tileSet);
 
     DrawStartScreen();
 
     for (auto& pair : pipesPairs) {
-        pair.Draw(renderer);
+        pair.Draw(renderer, tileSet);
     }
 
     WriteScore();
 
-    floor.Draw(renderer);
+    floor.Draw(renderer, tileSet);
 
     if (state != GameState::Start) {
-        bird.Draw(*renderer);
+        bird.Draw(*renderer, tileSet);
     }
 
     DrawGameOver();
@@ -211,7 +210,7 @@ void Game::DrawStartScreen() {
             startRect.w,
             startRect.h };
 
-        SDL_Texture* texture = TextureLoader::LoadTexture(renderer, Constants::Sprites::TileSetPath);
+        SDL_Texture* texture = tileSet.GetTexture(renderer);
         SDL_RenderTexture(renderer, texture, &startRect, &dstRect);
     }
 }
@@ -220,14 +219,86 @@ void Game::DrawGameOver() {
     if (state == GameState::GameOver) {
         namespace GameOver = Constants::Sprites::GameOver;
         SDL_FRect gameOverRect = {GameOver::X, GameOver::Y, GameOver::Width, GameOver::Height};
-        SDL_FRect dstRect = {Constants::Window::Width / 2-gameOverRect.w / 2,
-            gameOverRect.y,
-            gameOverRect.w,
-            gameOverRect.h };
+        SDL_FRect dstRect = {GameOver::CentralX, gameOverRect.y, gameOverRect.w, gameOverRect.h };
 
-        SDL_Texture* texture = TextureLoader::LoadTexture(renderer, Constants::Sprites::TileSetPath);
+        SDL_Texture* texture = tileSet.GetTexture(renderer);
         SDL_RenderTexture(renderer, texture, &gameOverRect, &dstRect);
+
+        if (score >= best) {
+            best = score;
+        }
+
+        WriteScoreOnGameOver(score, GameOver::Score::Y);
+        WriteScoreOnGameOver(best, GameOver::Best::Y);
+
+        if (score >= 10 && score < 20) {
+            DrawBronzeMedal(texture);
+        }
+        else if (score >= 20 && score < 30) {
+            DrawSilverMedal(texture);
+        }
+        else if (score >= 30 && score < 40) {
+            DrawGoldMedal(texture);
+        }
+        else if (score >= 40) {
+            DrawPlatinumMedal(texture);
+        }
     }
+}
+
+void Game::WriteScoreOnGameOver(int score, float y) {
+    namespace GameOver = Constants::Sprites::GameOver;
+    SDL_SetRenderDrawColor(renderer, black.r, black.g, black.b, black.a);
+    SDL_SetRenderScale(renderer, 2.0f, 2.0f);
+    SDL_RenderDebugText(renderer, GameOver::Score::X, y, std::to_string(score).c_str());
+    SDL_SetRenderScale(renderer, 1.0f, 1.0f);
+}
+
+void Game::DrawBronzeMedal(SDL_Texture* texture) {
+    SDL_FRect bronzeSrc = {
+        Constants::Sprites::Medal::Bronze::X,
+        Constants::Sprites::Medal::Bronze::Y,
+        Constants::Sprites::Medal::Bronze::Width,
+        Constants::Sprites::Medal::Bronze::Height
+    };
+    DrawMedal(texture, bronzeSrc);
+}
+
+void Game::DrawSilverMedal(SDL_Texture* texture) {
+    SDL_FRect silverSrc = {
+        Constants::Sprites::Medal::Silver::X,
+        Constants::Sprites::Medal::Silver::Y,
+        Constants::Sprites::Medal::Silver::Width,
+        Constants::Sprites::Medal::Silver::Height
+    };
+    DrawMedal(texture, silverSrc);
+}
+
+void Game::DrawGoldMedal(SDL_Texture* texture) {
+    SDL_FRect goldSrc = {
+        Constants::Sprites::Medal::Gold::X,
+        Constants::Sprites::Medal::Gold::Y,
+        Constants::Sprites::Medal::Gold::Width,
+        Constants::Sprites::Medal::Gold::Height
+    };
+    DrawMedal(texture, goldSrc);
+}
+
+void Game::DrawPlatinumMedal(SDL_Texture* texture) {
+    SDL_FRect goldSrc = {
+        Constants::Sprites::Medal::Platinum::X,
+        Constants::Sprites::Medal::Platinum::Y,
+        Constants::Sprites::Medal::Platinum::Width,
+        Constants::Sprites::Medal::Platinum::Height
+    };
+    DrawMedal(texture, goldSrc);
+}
+
+void Game::DrawMedal(SDL_Texture* texture, SDL_FRect medalSrc) {
+    namespace GameOver = Constants::Sprites::GameOver;
+
+    SDL_FRect medalDst = {GameOver::Medal::X, GameOver::Medal::Y, medalSrc.w, medalSrc.h};
+    SDL_RenderTexture(renderer, texture, &medalSrc, &medalDst);
 }
 
 void Game::WriteScore() {
@@ -255,7 +326,6 @@ void Game::UpdateScore() {
                 }
             }
         }
-
     }
 }
 

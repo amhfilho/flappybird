@@ -86,6 +86,44 @@ namespace Constants {
             inline constexpr float Y = 150.0f;
             inline constexpr float Width = 231.0f;
             inline constexpr float Height = 204.0f;
+            inline constexpr float CentralX = 162.5f;
+            namespace Score {
+                inline constexpr float X = 171.25f;
+                inline constexpr float Y = 115.0f;
+            }
+            namespace Best {
+                inline constexpr float Y = 135.0f;
+            }
+            namespace Medal {
+                inline constexpr float X = 191.5f;
+                inline constexpr float Y = 240.0f;
+            }
+        }
+        namespace Medal {
+            namespace Platinum {
+                inline constexpr float X = 0.0f;
+                inline constexpr float Y = 79.0f;
+                inline constexpr float Width = 43.0f;
+                inline constexpr float Height = 43.0f;
+            }
+            namespace Gold {
+                inline constexpr float X = 0.0f;
+                inline constexpr float Y = 122.0f;
+                inline constexpr float Width = 45.0f;
+                inline constexpr float Height = 46.0f;
+            }
+            namespace Silver {
+                inline constexpr float X = 47.0f;
+                inline constexpr float Y = 79.0f;
+                inline constexpr float Width = 45.0f;
+                inline constexpr float Height = 46.0f;
+            }
+            namespace Bronze {
+                inline constexpr float X = 47.0f;
+                inline constexpr float Y = 122.0f;
+                inline constexpr float Width = 45.0f;
+                inline constexpr float Height = 46.0f;
+            }
         }
     }
 

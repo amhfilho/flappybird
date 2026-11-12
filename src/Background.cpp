@@ -5,10 +5,9 @@
 
 #include <SDL3/SDL_render.h>
 #include "Constants.h"
-#include "TextureLoader.h"
+#include "Sprite.h"
 
 Background::Background() :
-    sprite(Constants::Sprites::TileSetPath),
     background{} {
 
     background = {
@@ -19,8 +18,8 @@ Background::Background() :
     };
 }
 
-void Background::Draw(SDL_Renderer* renderer) {
-    SDL_Texture *texture = sprite.GetTexture(renderer);
+void Background::Draw(SDL_Renderer* renderer, Sprite& tileSet) {
+    SDL_Texture *texture = tileSet.GetTexture(renderer);
 
     for (float x = 0.0f;
         x + background.w < Constants::Window::Width ;

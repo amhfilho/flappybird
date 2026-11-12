@@ -7,15 +7,15 @@
 #include <SDL3/SDL_render.h>
 
 #include "Constants.h"
-#include "TextureLoader.h"
+#include "Sprite.h"
 
 UpperPipe::UpperPipe(Vector2 position) :
     position(position) {
 
 };
 
-void UpperPipe::Draw(SDL_Renderer* renderer) {
-    SDL_Texture* texture = TextureLoader::LoadTexture(renderer, Constants::Sprites::TileSetPath);
+void UpperPipe::Draw(SDL_Renderer* renderer, Sprite& tileSet) {
+    SDL_Texture* texture = tileSet.GetTexture(renderer);
     SDL_FRect srcRect = {
         Constants::Sprites::UpperPipe::X,
         Constants::Sprites::UpperPipe::Y,

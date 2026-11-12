@@ -43,8 +43,8 @@ private:
     std::uint64_t ticksCount;
     float deltaTime;
 
+    Sprite tileSet; // the only instance of the main sprite sheet, shared by every drawable
     Bird bird;
-    Sprite tileSet;
     Background background;
     Floor floor;
 
@@ -54,6 +54,7 @@ private:
     Uint64 freezeUntil = 0;
 
     int score;
+    int best;
 
     std::unique_ptr<FontLoader> font;
 
@@ -67,7 +68,19 @@ private:
 
     void CheckCollisions();
 
+    void DrawMedal(SDL_Texture* texture, SDL_FRect bronze_src);
+
+    void DrawBronzeMedal(SDL_Texture* texture);
+
+    void DrawSilverMedal(SDL_Texture *texture);
+
+    void DrawGoldMedal(SDL_Texture * texture);
+
+    void DrawPlatinumMedal(SDL_Texture * texture);
+
     void DrawGameOver();
+
+    void WriteScoreOnGameOver(int score, float y);
 
     void WriteScore();
 

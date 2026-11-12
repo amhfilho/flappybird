@@ -9,6 +9,7 @@
 #include "Colors.h"
 #include "Constants.h"
 #include "Game.h"
+#include "Sprite.h"
 #include "TextureLoader.h"
 
 Bird::Bird(Game& game, Vector2 position) :
@@ -61,8 +62,8 @@ void Bird::Flap() {
     }
 }
 
-void Bird::Draw(SDL_Renderer &renderer) {
-    SDL_Texture* texture = TextureLoader::LoadTexture(&renderer, "Graphics/sprites.png");
+void Bird::Draw(SDL_Renderer &renderer, Sprite& tileSet) {
+    SDL_Texture* texture = tileSet.GetTexture(&renderer);
     SDL_FRect sprite = spriteRects.at(currentFrame);
     SDL_FRect dest = GetRect();
     if (angle < Constants::Sprites::Bird::DownAngle) {

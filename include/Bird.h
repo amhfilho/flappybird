@@ -9,6 +9,7 @@
 #include "Vector2.h"
 
 class Game;
+class Sprite;
 struct SDL_FRect;
 struct SDL_Renderer;
 
@@ -18,7 +19,7 @@ public:
     ~Bird() = default;
 
     void Update(float deltaTime);
-    void Draw(SDL_Renderer& renderer);
+    void Draw(SDL_Renderer& renderer, Sprite& tileSet);
 
     void Flap();
 

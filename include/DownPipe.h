@@ -7,6 +7,7 @@
 
 struct SDL_FRect;
 struct SDL_Renderer;
+class Sprite;
 
 class DownPipe {
 public:
@@ -14,7 +15,7 @@ public:
     ~DownPipe() = default;
 
     void Update(float deltaTime);
-    void Draw(SDL_Renderer* renderer);
+    void Draw(SDL_Renderer* renderer, Sprite& tileSet);
 
     void SetPosition(Vector2 position);
 

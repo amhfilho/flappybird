@@ -45,10 +45,10 @@ void PipesPair::Update(float deltaTtime) {
     active = upperPipe.GetPosition().x + Constants::Sprites::UpperPipe::Width > 0;
 }
 
-void PipesPair::Draw(SDL_Renderer *renderer) {
+void PipesPair::Draw(SDL_Renderer *renderer, Sprite& tileSet) {
     if (!active) return;
-    upperPipe.Draw(renderer);
-    downPipe.Draw(renderer);
+    upperPipe.Draw(renderer, tileSet);
+    downPipe.Draw(renderer, tileSet);
 }
 
 SDL_FRect PipesPair::GetScoreRect() const {

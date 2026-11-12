@@ -6,10 +6,9 @@
 
 #include <SDL3/SDL_render.h>
 #include "Constants.h"
-#include "TextureLoader.h"
+#include "Sprite.h"
 
 Floor::Floor() :
-    sprite(Constants::Sprites::TileSetPath),
     rect{},
     scrollOffset(0.0f) {
 
@@ -26,8 +25,8 @@ void Floor::Update(float deltaTime) {
     scrollOffset = SDL_fmodf(scrollOffset + ScrollSpeed * deltaTime, TileStride());
 }
 
-void Floor::Draw(SDL_Renderer* renderer) {
-    SDL_Texture *texture = sprite.GetTexture(renderer);
+void Floor::Draw(SDL_Renderer* renderer, Sprite& tileSet) {
+    SDL_Texture *texture = tileSet.GetTexture(renderer);
 
     for (float x = -scrollOffset;
         x < Constants::Window::Width ;

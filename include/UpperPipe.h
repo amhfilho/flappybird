@@ -6,6 +6,7 @@
 
 struct SDL_FRect;
 struct SDL_Renderer;
+class Sprite;
 
 class UpperPipe {
 public:
@@ -13,7 +14,7 @@ public:
     ~UpperPipe() = default;
 
     void Update(float deltaTime);
-    void Draw(SDL_Renderer* renderer);
+    void Draw(SDL_Renderer* renderer, Sprite& tileSet);
 
     Vector2 GetPosition() const;
 

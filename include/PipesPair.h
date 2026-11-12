@@ -12,7 +12,7 @@ public:
     ~PipesPair() = default;
 
     void Update(float deltTtime);
-    void Draw(SDL_Renderer* renderer);
+    void Draw(SDL_Renderer* renderer, Sprite& tileSet);
 
     bool IsActive() const { return active; }
     const UpperPipe& GetUpperPipe() const { return upperPipe; }

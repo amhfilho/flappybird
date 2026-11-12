@@ -12,7 +12,7 @@ public:
     ~Floor() = default;
 
     void Update(float deltaTime);
-    void Draw(SDL_Renderer* renderer);
+    void Draw(SDL_Renderer* renderer, Sprite& tileSet);
 
     float GetFloorY();
 
@@ -22,7 +22,6 @@ private:
     // Distance between tiles; 2px overlap hides seams between them.
     float TileStride() const { return rect.w - 2.0f; }
 
-    Sprite sprite;
     SDL_FRect rect;     // source rectangle in the atlas, never modified after construction
     float scrollOffset;
 };

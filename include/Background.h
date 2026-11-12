@@ -12,10 +12,9 @@ public:
     Background();
     ~Background() = default;
 
-    void Draw(SDL_Renderer* renderer);
+    void Draw(SDL_Renderer* renderer, Sprite& tileSet);
 
 private:
-    Sprite sprite;
     SDL_FRect background;
 };
 
