@@ -4,6 +4,8 @@
 
 #pragma once
 #include <cstdint>
+#include <memory>
+#include <SDL3_mixer/SDL_mixer.h>
 
 #include "Background.h"
 #include "Bird.h"
@@ -35,10 +37,17 @@ public:
     [[nodiscard]] std::uint64_t GetTicksCount() const;
     GameState GetGameState() const;
 
+    void PlaySound(MIX_Audio *sound);
+
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
     MIX_Mixer* mixer = nullptr;
+    MIX_Audio* flapSound = nullptr;
+    MIX_Audio* hitSound = nullptr;
+    MIX_Audio* gameOverSound = nullptr;
+    MIX_Audio* scoreSound = nullptr;
+
 
     std::uint64_t ticksCount;
     float deltaTime;

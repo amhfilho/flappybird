@@ -14,6 +14,20 @@ namespace Constants {
         inline constexpr int Height = 700;
     }
 
+    namespace Start {
+        inline constexpr float X = 188.5f;
+        inline constexpr float Y = 50.0f;
+    }
+
+    namespace Score {
+        inline constexpr float TopMargin = 20.0f;
+    }
+
+    namespace PipeDeployInterval {
+        inline constexpr double Min = 2000;
+        inline constexpr double Max = 3500;
+    }
+
     namespace Sprites {
         inline constexpr const char* TileSetPath = "Graphics/sprites.png";
         namespace Background {
@@ -35,7 +49,6 @@ namespace Constants {
             inline constexpr float AnimationFPS = 24.0f;
             inline constexpr float Gravity = 500.0f;
             inline constexpr float FlapSpeed = 200.0f;
-
             namespace Sprite1 {
                 inline constexpr float X = 0.0f;
                 inline constexpr float Y = 0.0f;
@@ -130,5 +143,12 @@ namespace Constants {
     namespace Font {
         inline constexpr const char* Path = "Fonts/PublicPixel.ttf";
         inline constexpr float Size = 40.0f;
+    }
+
+    namespace Sound {
+        inline constexpr const char* Flap = "Sounds/jump.wav";
+        inline constexpr const char* Hit = "Sounds/hurt.wav";
+        inline constexpr const char* GameOver = "Sounds/explosion.wav";
+        inline constexpr const char* Score = "Sounds/coin.wav";
     }
 }

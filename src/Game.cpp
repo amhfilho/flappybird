@@ -7,6 +7,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_mixer/SDL_mixer.h>
 
+#include "AssetLoader.h"
 #include "Constants.h"
 #include "Colors.h"
 #include "FontLoader.h"
@@ -28,9 +29,16 @@ Game::Game():
 }
 
 Game::~Game() {
+    font.reset(); // must be released before the renderer is destroyed
+    for (MIX_Audio* audio : {flapSound, hitSound, gameOverSound, scoreSound}) {
+        if (audio) MIX_DestroyAudio(audio);
+    }
+    if (mixer) MIX_DestroyMixer(mixer);
+    MIX_Quit();
     TextureLoader::Clear();
     if (renderer) SDL_DestroyRenderer(renderer);
     if (window) SDL_DestroyWindow(window);
+    SDL_Quit();
 }
 
 bool Game::InitializeWindow() {
@@ -46,15 +54,12 @@ bool Game::InitializeWindow() {
         0);
     if (!window) {
         SDL_Log("Error creating window: %s", SDL_GetError());
-        SDL_Quit();
         return false;
     }
 
     renderer = SDL_CreateRenderer(window, nullptr);
     if (!renderer) {
         SDL_Log("Error creating renderer: %s", SDL_GetError());
-        SDL_DestroyWindow(window);
-        SDL_Quit();
         return false;
     }
 
@@ -64,6 +69,22 @@ bool Game::InitializeWindow() {
     }
 
     font = std::make_unique<FontLoader>(Constants::Font::Path, Constants::Font::Size);
+
+    if (MIX_Init()) {
+        mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr);
+    }
+
+    if (mixer) {
+        flapSound = MIX_LoadAudio(mixer, AssetLoader::GetAssetPath(Constants::Sound::Flap).c_str(), true);
+        hitSound = MIX_LoadAudio(mixer, AssetLoader::GetAssetPath(Constants::Sound::Hit).c_str(), true);
+        gameOverSound = MIX_LoadAudio(mixer, AssetLoader::GetAssetPath(Constants::Sound::GameOver).c_str(), true);
+        scoreSound = MIX_LoadAudio(mixer, AssetLoader::GetAssetPath(Constants::Sound::Score).c_str(), true);
+        if (!flapSound || !hitSound || !gameOverSound || !scoreSound) {
+            SDL_Log("Some sounds failed to load: %s", SDL_GetError());
+        }
+    } else {
+        SDL_Log("Audio unavailable: %s", SDL_GetError());
+    }
 
     return true;
 }
@@ -101,6 +122,7 @@ void Game::HandleInput() {
                 if (event.button.button == SDL_BUTTON_LEFT) {
                     if (state == GameState::Playing) {
                         bird.Flap();
+                        PlaySound(flapSound);
                     }
                     else if (state == GameState::Start) {
                         state = GameState::Playing;
@@ -136,7 +158,7 @@ void Game::Update() {
     if (currentTicks - lastPipeDeployTime > pipeDeployInterval) {
         pipesPairs.emplace_back(Vector2{0.0f, 0.0f});
         lastPipeDeployTime = currentTicks;
-        pipeDeployInterval = Random::Double(2000, 3500);
+        pipeDeployInterval = Random::Double(Constants::PipeDeployInterval::Min, Constants::PipeDeployInterval::Max);
     }
 
     for (auto& pair : pipesPairs) {
@@ -168,9 +190,11 @@ void Game::CheckCollisions() {
             }
             state = GameState::BirdHurt;
             bird.OnPipeCollide();
+            PlaySound(hitSound);
         }
     }
     if (bird.IsInFloor()) {
+        PlaySound(gameOverSound);
         state = GameState::GameOver;
     }
 }
@@ -205,10 +229,8 @@ void Game::DrawStartScreen() {
     if (state == GameState::Start) {
         namespace StartScreen = Constants::Sprites::StartScreen;
         SDL_FRect startRect = {StartScreen::X, StartScreen::Y, StartScreen::Width, StartScreen::Height};
-        SDL_FRect dstRect = {(Constants::Window::Width - startRect.w) / 2,
-            50.0f,
-            startRect.w,
-            startRect.h };
+        float x = (Constants::Window::Width - startRect.w) / 2;
+        SDL_FRect dstRect = {Constants::Start::X, Constants::Start::Y, startRect.w, startRect.h};
 
         SDL_Texture* texture = tileSet.GetTexture(renderer);
         SDL_RenderTexture(renderer, texture, &startRect, &dstRect);
@@ -296,18 +318,16 @@ void Game::DrawPlatinumMedal(SDL_Texture* texture) {
 
 void Game::DrawMedal(SDL_Texture* texture, SDL_FRect medalSrc) {
     namespace GameOver = Constants::Sprites::GameOver;
-
     SDL_FRect medalDst = {GameOver::Medal::X, GameOver::Medal::Y, medalSrc.w, medalSrc.h};
     SDL_RenderTexture(renderer, texture, &medalSrc, &medalDst);
 }
 
 void Game::WriteScore() {
-    if (state != GameState::Start) {
+    if (state != GameState::Start && state != GameState::GameOver) {
         std::string text = std::to_string(score);
-        const float topMargin = 20.0f;
         const float x = (Constants::Window::Width - font->MeasureTextWidth(text)) / 2.0f;
         // DrawText anchors the bottom edge, so add the font height to keep the top at topMargin
-        const float bottomY = topMargin + static_cast<float>(font->GetHeight());
+        const float bottomY = Constants::Score::TopMargin + static_cast<float>(font->GetHeight());
         font->DrawText(renderer, text, x, bottomY, white);
     }
 }
@@ -323,6 +343,7 @@ void Game::UpdateScore() {
                 if (!pair.IsScored() && birdRect.x > scoreRect.x + scoreRect.w) {
                     score++;
                     pair.MarkScored();
+                    PlaySound(scoreSound);
                 }
             }
         }
@@ -335,6 +356,12 @@ std::uint64_t Game::GetTicksCount() const {
 
 Game::GameState Game::GetGameState() const {
     return state;
+}
+
+void Game::PlaySound(MIX_Audio* sound) {
+    if (mixer && sound) {
+        MIX_PlayAudio(mixer, sound);
+    }
 }
 
 void Game::Reset() {
