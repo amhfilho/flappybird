@@ -34,3 +34,8 @@ Testing/
 .vscode/
 *.swp
 *~
+
+# WebAssembly build output
+build-wasm/
+dist/
+dist.zip

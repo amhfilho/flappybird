@@ -41,6 +41,16 @@ Game::~Game() {
     SDL_Quit();
 }
 
+bool Game::IsRunning() {
+    return state != GameState::Quit;
+}
+
+void Game::RunFrame() {
+    HandleInput();
+    Update();
+    Draw();
+}
+
 bool Game::InitializeWindow() {
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
         SDL_Log("Error starting SDL3: %s", SDL_GetError());
@@ -89,13 +99,9 @@ bool Game::InitializeWindow() {
     return true;
 }
 
-void Game::RunLoop()
-{
-    while (state != GameState::Quit)
-    {
-        HandleInput();
-        Update();
-        Draw();
+void Game::RunLoop() {
+    while (IsRunning()) {
+        RunFrame();
     }
 }
 
@@ -108,9 +114,12 @@ void Game::HandleInput() {
                 break;
             case SDL_EVENT_KEY_DOWN:
                 switch (event.key.key) {
+#ifndef __EMSCRIPTEN__
+                    // In the browser there is nothing to quit to, so Esc is ignored there.
                     case SDLK_ESCAPE:
                         state = GameState::Quit;
                         break;
+#endif
                     case SDLK_SPACE:
                         if (!event.key.repeat && state == GameState::Playing) {
                             bird.Flap();

@@ -30,6 +30,9 @@ public:
     Game();
     ~Game();
 
+    bool IsRunning();
+    void RunFrame();
+
     GameState state;
 
     bool InitializeWindow();
